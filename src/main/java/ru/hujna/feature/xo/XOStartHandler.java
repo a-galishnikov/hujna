@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.hujna.processor.handler.Handler;
 
 import java.io.Serializable;
@@ -20,13 +21,15 @@ public class XOStartHandler implements Handler {
     public Optional<BotApiMethod<? extends Serializable>> handle(Update update) {
 
         var chatId = update.getMessage().getChatId();
-        XOSession session = sessionCash.get(chatId);
+        XOSession session = XOUtil.initSession(chatId);
+        sessionCash.put(session);
+        User sender = update.getMessage().getFrom();
 
-        return Optional.ofNullable(update)
+        return Optional.of(update)
                 .map(x -> SendMessage
                         .builder()
                         .chatId(chatId.toString())
-                        .text("Let's play")
+                        .text(sender.getUserName() + " want's to play tic-tac-toe")
                         .replyMarkup(XOUtil.markup(session))
                         .build());
     }

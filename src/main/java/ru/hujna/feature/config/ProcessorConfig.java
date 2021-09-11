@@ -1,7 +1,10 @@
 package ru.hujna.feature.config;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import ru.hujna.bot.BotConfig;
 import ru.hujna.feature.xo.XOSessionCash;
 import ru.hujna.processor.Processor;
 import ru.hujna.processor.handler.Handler;
@@ -13,7 +16,11 @@ import ru.hujna.processor.matcher.MessageRegexMatcher;
 
 
 @Configuration
+@RequiredArgsConstructor
 public class ProcessorConfig {
+
+    @NonNull
+    private final BotConfig botConfig;
 
     @Bean
     public Processor hujnaProcessor() {
@@ -22,7 +29,7 @@ public class ProcessorConfig {
 
     @Bean
     public Processor xoStartProcessor(XOSessionCash sessionCash) {
-        return msgProcessor("^\\/xo$", new XOStartHandler(sessionCash));
+        return msgProcessor("^\\/xo(" + botConfig.getBotUsername() + ")?$", new XOStartHandler(sessionCash));
     }
 
     @Bean

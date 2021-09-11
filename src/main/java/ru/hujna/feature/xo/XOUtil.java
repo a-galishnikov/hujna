@@ -64,11 +64,11 @@ public class XOUtil {
         return keyboard;
     }
 
-    private static InlineKeyboardButton button(int i, int j, XO xo, XO cbXo) {
-        String nextXo = xo == XO.E ? cbXo.name() : "NOP";
+    private static InlineKeyboardButton button(int i, int j, XO current, XO callback) {
+        String nextXo = current == XO.E ? callback.name() : "NOP";
         return InlineKeyboardButton.builder()
                 .callbackData(String.format("xo:%d:%d:%s", i, j, nextXo))
-                .text(xo.getCell())
+                .text(current.getCell())
                 .build();
     }
 

@@ -1,12 +1,12 @@
-package ru.hujna.processor.handler;
+package ru.hujna.feature.huj;
 
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.hujna.feature.huj.HujnaHandler;
-import ru.hujna.processor.Processor;
+import ru.hujna.bot.BotConfig;
 import ru.hujna.feature.config.ProcessorConfig;
+import ru.hujna.processor.Processor;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -15,7 +15,7 @@ import static org.springframework.util.Assert.isInstanceOf;
 
 class HujnaProcessorTest {
 
-    ProcessorConfig config = new ProcessorConfig();
+    ProcessorConfig config = new ProcessorConfig(new BotConfig("@bot", "123"));
     Processor proc = config.hujnaProcessor();
 
     Long chatId = 1L;
