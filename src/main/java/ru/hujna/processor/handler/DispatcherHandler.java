@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.hujna.processor.Processor;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ public class DispatcherHandler implements Handler {
     private final List<Processor> processors;
 
     @Override
-    public Optional<BotApiMethod<Message>> handle(Update update) {
+    public Optional<BotApiMethod<? extends Serializable>> handle(Update update) {
         return processors.stream()
                 .filter(x -> x.match(update))
                 .findFirst()

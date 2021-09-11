@@ -3,11 +3,11 @@ package ru.hujna.processor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.hujna.processor.handler.Handler;
 import ru.hujna.processor.matcher.Matcher;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class Processor implements Handler, Matcher {
     }
 
     @Override
-    public Optional<BotApiMethod<Message>> handle(Update update) {
+    public Optional<BotApiMethod<? extends Serializable>> handle(Update update) {
         return handler.handle(update);
     }
 

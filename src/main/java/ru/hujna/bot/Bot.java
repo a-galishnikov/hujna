@@ -17,7 +17,7 @@ public class Bot extends TelegramLongPollingBot {
     private final BotConfig config;
 
     @NonNull
-    private final Handler handler;
+    private final Handler dispatcher;
 
     @Override
     public String getBotUsername() {
@@ -32,7 +32,7 @@ public class Bot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        var res = handler.handle(update);
+        var res = dispatcher.handle(update);
         if (res.isPresent()) {
             execute(res.get());
         }

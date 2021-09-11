@@ -4,8 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.hujna.feature.huj.HujnaHandler;
 import ru.hujna.processor.Processor;
-import ru.hujna.processor.config.ProcessorConfig;
+import ru.hujna.feature.config.ProcessorConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
