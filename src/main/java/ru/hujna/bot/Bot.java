@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.hujna.processor.handler.Handler;
 
 @Component
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class Bot extends TelegramLongPollingBot {
     private final BotConfig config;
 
     @NonNull
-    private final UpdateHandler handler;
+    private final Handler handler;
 
     @Override
     public String getBotUsername() {

@@ -1,19 +1,21 @@
-package ru.hujna.bot;
+package ru.hujna.processor.handler;
 
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.hujna.processor.Processor;
+import ru.hujna.processor.config.ProcessorConfig;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.util.Assert.isInstanceOf;
 
-class HujnaHandlerTest {
+class HujnaProcessorTest {
 
-    UpdateHandler handler = new HujnaHandler();
+    ProcessorConfig config = new ProcessorConfig();
+    Processor proc = config.hujnaProcessor();
 
     Long chatId = 1L;
     Integer msgId = 2;
@@ -21,41 +23,44 @@ class HujnaHandlerTest {
 
     @Test
     void russianAaaLetters() {
-        happyCase("АаааАаа");
+        happyMatchCase("АаааАаа");
     }
 
     @Test
     void russianAaaLettersAndSpecial() {
-        happyCase("АаааАаа!!..");
+        happyMatchCase("АаааАаа!!..");
     }
 
     @Test
     void englishAaaLetters() {
-        happyCase("aaaAAaA");
+        happyMatchCase("aaaAAaA");
     }
 
     @Test
     void englishAaaLettersAndSpecial() {
-        happyCase("aaaAAaA?!%$");
+        happyMatchCase("aaaAAaA?!%$");
     }
 
     @Test
     void russianOtherLetters() {
-        unhappyCase("А что он умеет?");
+        unhappyMatchCase("А что он умеет?");
     }
 
     @Test
     void russianAga() {
-        unhappyCase("Ага");
+        unhappyMatchCase("Ага");
     }
 
     @Test
     void englishOtherLetters() {
-        unhappyCase("And you think this is smart..");
+        unhappyMatchCase("And you think this is smart..");
     }
 
-    private void happyCase(String text) {
-        var res = handler.handle(update(text));
+    @Test
+    void testHandler() {
+        var text = "whatever";
+        var res = proc.handle(update(text));
+
         assertTrue(res.isPresent());
 
         var method = res.get();
@@ -67,9 +72,12 @@ class HujnaHandlerTest {
         assertEquals(msgText, sendMessage.getText());
     }
 
-    private void unhappyCase(String text) {
-        var res = handler.handle(update(text));
-        assertTrue(res.isEmpty());
+    private void happyMatchCase(String text) {
+        assertTrue(proc.match(update(text)));
+    }
+
+    private void unhappyMatchCase(String text) {
+        assertFalse(proc.match(update(text)));
     }
 
     private Update update(String text) {
@@ -78,7 +86,6 @@ class HujnaHandlerTest {
         when(message.getChatId()).thenReturn(chatId);
         when(message.hasText()).thenReturn(true);
         when(message.getText()).thenReturn(text);
-
 
         var update = mock(Update.class);
         when(update.hasMessage()).thenReturn(true);
