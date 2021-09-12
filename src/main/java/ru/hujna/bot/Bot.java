@@ -32,9 +32,9 @@ public class Bot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        var res = dispatcher.handle(update);
-        if (res.isPresent()) {
-            execute(res.get());
+        var toSend = dispatcher.handle(update);
+        for (var msg : toSend) {
+            execute(msg);
         }
     }
 }

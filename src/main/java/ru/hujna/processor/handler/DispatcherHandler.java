@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.hujna.processor.Processor;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +22,11 @@ public class DispatcherHandler implements Handler {
     private final List<Processor> processors;
 
     @Override
-    public Optional<BotApiMethod<? extends Serializable>> handle(Update update) {
+    public List<? extends BotApiMethod<? extends Serializable>> handle(Update update) {
         return processors.stream()
                 .filter(x -> x.match(update))
                 .findFirst()
-                .flatMap(x -> x.handle(update));
+                .map(x -> x.handle(update))
+                .orElse(Collections.emptyList());
     }
 }

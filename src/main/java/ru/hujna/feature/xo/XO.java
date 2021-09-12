@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum XO {
-    E("[_]"),
+    E("⬜️"),
 
-    O("[o]"),
+    O("⭕️"),
 
-    X("[x]"){
+    X("❌"){
         @Override
         XO reverse() {
             return O;

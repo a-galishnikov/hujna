@@ -8,7 +8,7 @@ import ru.hujna.processor.handler.Handler;
 import ru.hujna.processor.matcher.Matcher;
 
 import java.io.Serializable;
-import java.util.Optional;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class Processor implements Handler, Matcher {
@@ -25,7 +25,7 @@ public class Processor implements Handler, Matcher {
     }
 
     @Override
-    public Optional<BotApiMethod<? extends Serializable>> handle(Update update) {
+    public List<? extends BotApiMethod<? extends Serializable>> handle(Update update) {
         return handler.handle(update);
     }
 

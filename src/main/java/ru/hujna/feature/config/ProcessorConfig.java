@@ -34,7 +34,7 @@ public class ProcessorConfig {
 
     @Bean
     public Processor xoCallbackProcessor(XOSessionCash sessionCash) {
-        return callbackProcessor("^xo:[0-2]:[0-2]:[EOX]$", new XOCallbackHandler(sessionCash));
+        return callbackProcessor("^xo:\\d+:[0-2]:[0-2]:[EOX]$", new XOCallbackHandler(sessionCash));
     }
 
     private Processor msgProcessor(String regex, Handler handler) {

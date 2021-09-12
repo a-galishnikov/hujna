@@ -61,10 +61,9 @@ class HujnaProcessorTest {
     void testHandler() {
         var text = "whatever";
         var res = proc.handle(update(text));
+        assertEquals(1, res.size());
 
-        assertTrue(res.isPresent());
-
-        var method = res.get();
+        var method = res.get(0);
         isInstanceOf(SendMessage.class, method);
 
         var sendMessage = (SendMessage) method;
