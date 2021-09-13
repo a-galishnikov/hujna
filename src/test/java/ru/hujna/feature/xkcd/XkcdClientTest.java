@@ -16,7 +16,7 @@ public class XkcdClientTest {
         XkcdComic randomComic = client.random();
 
         assertNotNull(randomComic);
-        assertNotNull(randomComic.getNum());
+        assertNotNull(randomComic.num());
     }
 
     @Test
@@ -24,24 +24,24 @@ public class XkcdClientTest {
         XkcdComic randomComic = client.latest();
 
         assertNotNull(randomComic);
-        assertNotNull(randomComic.getNum());
+        assertNotNull(randomComic.num());
     }
 
     @Test
     void testGetById() {
         XkcdComic comic = client.get(3);
 
-        assertEquals("1", comic.getMonth());
-        assertEquals("2006", comic.getYear());
-        assertEquals("1", comic.getDay());
-        assertEquals(3, comic.getNum());
-        assertEquals("", comic.getLink());
-        assertEquals("", comic.getNews());
-        assertEquals("Island (sketch)", comic.getTitle());
-        assertEquals("Island (sketch)", comic.getSafe_title());
-        assertEquals("[[A sketch of an Island]]\n{{Alt:Hello, island}}", comic.getTranscript());
-        assertEquals("Hello, island", comic.getAlt());
-        assertEquals("https://imgs.xkcd.com/comics/island_color.jpg", comic.getImg());
+        assertEquals("1", comic.month());
+        assertEquals("2006", comic.year());
+        assertEquals("1", comic.day());
+        assertEquals(3, comic.num());
+        assertEquals("", comic.link());
+        assertEquals("", comic.news());
+        assertEquals("Island (sketch)", comic.title());
+        assertEquals("Island (sketch)", comic.safe_title());
+        assertEquals("[[A sketch of an Island]]\n{{Alt:Hello, island}}", comic.transcript());
+        assertEquals("Hello, island", comic.alt());
+        assertEquals("https://imgs.xkcd.com/comics/island_color.jpg", comic.img());
     }
 
 }

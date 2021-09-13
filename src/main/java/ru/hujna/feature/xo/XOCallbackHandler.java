@@ -27,7 +27,7 @@ public class XOCallbackHandler implements Handler {
         var chatId = callback.getMessage().getChatId();
         var chatIdStr = chatId.toString();
         XOMove move = XOUtil.parseMove(update.getCallbackQuery().getData());
-        var initialMessageId = move.getMessageId();
+        var initialMessageId = move.messageId();
         var callbackMessageId = callback.getMessage().getMessageId();
 
         return sessionCash.get(chatId, initialMessageId).map(session -> {

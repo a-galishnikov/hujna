@@ -28,20 +28,20 @@ public class XkcdHandler implements Handler {
                                 .chatId(x.getMessage().getChatId().toString())
                                 .caption(buildCaption(comic))
                                 .parseMode("HTML")
-                                .photo(new InputFile(comic.getImg()))
+                                .photo(new InputFile(comic.img()))
                                 .build())).orElse(Collections.emptyList());
     }
 
     private String buildCaption(XkcdComic comic) {
         var caption = new StringBuilder();
 
-        if (comic.getLink() == null || comic.getLink().isBlank()) {
-            caption.append(String.format("<b>%s</b>", comic.getTitle()));
+        if (comic.link() == null || comic.link().isBlank()) {
+            caption.append(String.format("<b>%s</b>", comic.title()));
         } else {
-            caption.append(String.format("<a href='%s'><b>%s</b></a>", comic.getLink(), comic.getTitle()));
+            caption.append(String.format("<a href='%s'><b>%s</b></a>", comic.link(), comic.title()));
         }
-        if (comic.getAlt() != null && !comic.getAlt().isBlank()) {
-            caption.append(String.format("%n%s", comic.getAlt()));
+        if (comic.alt() != null && !comic.alt().isBlank()) {
+            caption.append(String.format("%n%s", comic.alt()));
         }
 
         return caption.toString();

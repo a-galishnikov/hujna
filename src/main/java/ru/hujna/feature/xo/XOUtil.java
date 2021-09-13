@@ -56,7 +56,7 @@ public class XOUtil {
                 .chatId(session.getChatId())
                 .messageId(session.getMessageId())
                 .type(session.getType())
-                .lastXo(move.getXo())
+                .lastXo(move.xo())
                 .field(field)
                 .state(state)
                 .build();
@@ -93,7 +93,8 @@ public class XOUtil {
                         if (i == dim - j - 1) diag2SumX++;
                         break;
                 }
-                if ((i == dim - 1 || j == dim - 1) && (rowSumO == dim || rowSumX == dim ||
+                if ((i == dim - 1 || j == dim - 1) &&
+                        (rowSumO == dim || rowSumX == dim ||
                         diag1SumO == dim || diag1SumX == dim ||
                         diag2SumO == dim || diag2SumX == dim ||
                         colSumO[j] == dim || colSumX[j] == dim)) {
@@ -107,7 +108,7 @@ public class XOUtil {
 
     public static XO[][] move(XO[][] field, XOMove move) {
         XO[][] newField = copy(field);
-        newField[move.getX()][move.getY()] = move.getXo();
+        newField[move.x()][move.y()] = move.xo();
         return newField;
     }
 
@@ -152,8 +153,8 @@ public class XOUtil {
     }
 
     public static boolean validate(XOSession session, XOMove move) {
-        boolean cellIsEmpty = session.getField()[move.getX()][move.getY()] == XO.E;
-        boolean moveIsNotDuplicated = session.getLastXo() != move.getXo();
+        boolean cellIsEmpty = session.getField()[move.x()][move.y()] == XO.E;
+        boolean moveIsNotDuplicated = session.getLastXo() != move.xo();
         return cellIsEmpty && moveIsNotDuplicated;
     }
 }
