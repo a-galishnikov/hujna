@@ -22,7 +22,7 @@ public class XOCallbackHandler implements Handler {
     private final XOSessionCash sessionCash;
 
     @Override
-    public List<? extends BotApiMethod<? extends Serializable>> handle(Update update) {
+    public List<BotApiMethod<? extends Serializable>> handle(Update update) {
         var callback = update.getCallbackQuery();
         var chatId = callback.getMessage().getChatId();
         var chatIdStr = chatId.toString();

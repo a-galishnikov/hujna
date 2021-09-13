@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hujna.bot.BotConfig;
+import ru.hujna.feature.xkcd.XkcdClient;
+import ru.hujna.feature.xkcd.XkcdHandler;
 import ru.hujna.feature.xo.XOSessionCash;
 import ru.hujna.processor.Processor;
 import ru.hujna.processor.handler.Handler;
@@ -28,8 +30,13 @@ public class ProcessorConfig {
     }
 
     @Bean
-    public Processor xoStartProcessor(XOSessionCash sessionCash) {
+    public Processor xoProcessor(XOSessionCash sessionCash) {
         return msgProcessor("^\\/xo(" + botConfig.getBotUsername() + ")?$", new XOStartHandler(sessionCash));
+    }
+
+    @Bean
+    public Processor xkcdProcessor(XkcdClient client) {
+        return msgProcessor("^\\/xkcd(" + botConfig.getBotUsername() + ")?$", new XkcdHandler(client));
     }
 
     @Bean

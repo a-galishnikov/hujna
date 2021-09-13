@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum XO {
-    E("⬜️"),
+    E("⬜"),
 
-    O("⭕️"),
+    O("⭕"),
 
     X("❌"){
         @Override

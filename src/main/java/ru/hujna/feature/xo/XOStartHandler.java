@@ -3,13 +3,11 @@ package ru.hujna.feature.xo;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.hujna.processor.handler.Handler;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class XOStartHandler implements Handler {
     private final XOSessionCash sessionCash;
 
     @Override
-    public List<? extends BotApiMethod<? extends Serializable>> handle(Update update) {
+    public List<SendMessage> handle(Update update) {
 
         var chatId = update.getMessage().getChatId();
         var messageId = update.getMessage().getMessageId();
