@@ -21,16 +21,30 @@ public class XkcdHandler implements Handler {
 
     @Override
     public List<? extends PartialBotApiMethod<? extends Serializable>> handle(Update update) {
-
         XkcdComic comic = client.random();
-
         return Optional.ofNullable(update)
                 .map(x -> Collections.singletonList(
                         SendPhoto.builder()
                                 .chatId(x.getMessage().getChatId().toString())
-                                .caption(comic.getAlt())
+                                .caption(buildCaption(comic))
+                                .parseMode("HTML")
                                 .photo(new InputFile(comic.getImg()))
                                 .build())).orElse(Collections.emptyList());
+    }
+
+    private String buildCaption(XkcdComic comic) {
+        var caption = new StringBuilder();
+
+        if (comic.getLink() == null || comic.getLink().isBlank()) {
+            caption.append(String.format("<b>%s</b>", comic.getTitle()));
+        } else {
+            caption.append(String.format("<a href='%s'><b>%s</b></a>", comic.getLink(), comic.getTitle()));
+        }
+        if (comic.getAlt() != null && !comic.getAlt().isBlank()) {
+            caption.append(String.format("%n%s", comic.getAlt()));
+        }
+
+        return caption.toString();
     }
 
 
