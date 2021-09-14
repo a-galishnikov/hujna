@@ -1,19 +1,19 @@
 package ru.hujna.feature.xkcd;
 
 import lombok.NonNull;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@Component
+@RequiredArgsConstructor
 public class XkcdClientImpl implements XkcdClient {
     // see https://xkcd.com/json.html
 
     @NonNull
-    private final WebClient cxkcd = WebClient.create("https://c.xkcd.com");
+    private final WebClient xkcd;
 
     @NonNull
-    private final WebClient xkcd = WebClient.create("https://xkcd.com");
+    private final WebClient cxkcd;
 
     @Override
     public XkcdComic random() {

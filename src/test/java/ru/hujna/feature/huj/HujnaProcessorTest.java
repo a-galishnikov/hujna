@@ -4,9 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.hujna.bot.BotConfig;
-import ru.hujna.feature.config.ProcessorConfig;
-import ru.hujna.processor.Processor;
+import ru.hujna.processor.handler.Handler;
+import ru.hujna.processor.matcher.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -15,8 +14,9 @@ import static org.springframework.util.Assert.isInstanceOf;
 
 class HujnaProcessorTest {
 
-    ProcessorConfig config = new ProcessorConfig(new BotConfig("@bot", "123"));
-    Processor proc = config.hujnaProcessor();
+    HujnaConfig config = new HujnaConfig();
+    Handler handler = config.hujnaHandler();
+    Matcher matcher = config.hujnaMatcher();
 
     Long chatId = 1L;
     Integer msgId = 2;
@@ -60,7 +60,7 @@ class HujnaProcessorTest {
     @Test
     void testHandler() {
         var text = "whatever";
-        var res = proc.handle(update(text));
+        var res = handler.handle(update(text));
         assertEquals(1, res.size());
 
         var method = res.get(0);
@@ -73,11 +73,11 @@ class HujnaProcessorTest {
     }
 
     private void happyMatchCase(String text) {
-        assertTrue(proc.match(update(text)));
+        assertTrue(matcher.match(update(text)));
     }
 
     private void unhappyMatchCase(String text) {
-        assertFalse(proc.match(update(text)));
+        assertFalse(matcher.match(update(text)));
     }
 
     private Update update(String text) {

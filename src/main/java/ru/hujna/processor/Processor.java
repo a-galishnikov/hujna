@@ -2,7 +2,6 @@ package ru.hujna.processor;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.hujna.processor.handler.Handler;

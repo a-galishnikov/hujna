@@ -2,6 +2,7 @@ package ru.hujna.feature.xkcd;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Tag("xkcd-integration")
 public class XkcdClientTest {
 
-    XkcdClient client = new XkcdClientImpl();
+    WebClient xkcd = WebClient.create("https://xkcd.com");
+    WebClient cxkcd = WebClient.create("https://c.xkcd.com");
+    XkcdClient client = new XkcdClientImpl(xkcd, cxkcd);
 
     @Test
     void testRandom() {
