@@ -1,9 +1,10 @@
-package ru.hujna.feature.xo;
+package ru.hujna.feature.xo.model;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import ru.hujna.feature.xo.XOUtil;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

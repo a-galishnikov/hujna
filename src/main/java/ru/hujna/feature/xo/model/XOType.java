@@ -1,4 +1,4 @@
-package ru.hujna.feature.xo;
+package ru.hujna.feature.xo.model;
 
 public enum XOType {
     PVP, PVE

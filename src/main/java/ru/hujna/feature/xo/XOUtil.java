@@ -2,6 +2,7 @@ package ru.hujna.feature.xo;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.hujna.feature.xo.model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;

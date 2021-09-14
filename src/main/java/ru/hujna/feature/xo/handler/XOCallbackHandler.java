@@ -1,4 +1,4 @@
-package ru.hujna.feature.xo;
+package ru.hujna.feature.xo.handler;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,10 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.hujna.feature.xo.model.XOMove;
+import ru.hujna.feature.xo.model.XOSession;
+import ru.hujna.feature.xo.XOSessionCash;
+import ru.hujna.feature.xo.XOUtil;
 import ru.hujna.processor.handler.Handler;
 
 import java.io.Serializable;

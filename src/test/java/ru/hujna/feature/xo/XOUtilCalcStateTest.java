@@ -1,6 +1,8 @@
 package ru.hujna.feature.xo;
 
 import org.junit.jupiter.api.Test;
+import ru.hujna.feature.xo.model.XO;
+import ru.hujna.feature.xo.model.XOState;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

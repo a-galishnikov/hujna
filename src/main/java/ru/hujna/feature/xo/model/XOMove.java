@@ -1,3 +1,3 @@
-package ru.hujna.feature.xo;
+package ru.hujna.feature.xo.model;
 
 public record XOMove(int messageId, int x, int y, XO xo) {}

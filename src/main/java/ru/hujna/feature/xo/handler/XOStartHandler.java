@@ -1,4 +1,4 @@
-package ru.hujna.feature.xo;
+package ru.hujna.feature.xo.handler;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
+import ru.hujna.feature.xo.model.XOSession;
+import ru.hujna.feature.xo.XOSessionCash;
+import ru.hujna.feature.xo.model.XOType;
+import ru.hujna.feature.xo.XOUtil;
 import ru.hujna.processor.handler.Handler;
 
 import java.util.Collections;

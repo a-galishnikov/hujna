@@ -1,4 +1,4 @@
-package ru.hujna.feature.xo;
+package ru.hujna.feature.xo.model;
 
 import lombok.Getter;
 
@@ -10,14 +10,14 @@ public enum XO {
 
     X("❌"){
         @Override
-        XO reverse() {
+        public XO reverse() {
             return O;
         }
     };
 
     private final String cell;
 
-    XO reverse() {
+    public XO reverse() {
         return X;
     }
 

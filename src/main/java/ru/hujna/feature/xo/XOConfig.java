@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hujna.bot.BotConfig;
+import ru.hujna.feature.xo.handler.XOCallbackHandler;
+import ru.hujna.feature.xo.handler.XOStartHandler;
 import ru.hujna.processor.Processor;
 import ru.hujna.processor.handler.Handler;
 import ru.hujna.processor.matcher.CallbackRegexMatcher;
