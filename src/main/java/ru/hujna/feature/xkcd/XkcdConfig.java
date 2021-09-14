@@ -21,19 +21,16 @@ public class XkcdConfig {
     }
 
     @Bean
-    @Qualifier("xkcdMatcher")
     public Matcher xkcdMatcher(@Qualifier("xkcdRegex") String regex) {
         return new MessageRegexMatcher(regex);
     }
 
     @Bean
-    @Qualifier("xkcdRegex")
     String xkcdRegex(BotConfig botConfig) {
         return "^\\/xkcd(" + botConfig.getBotUsername() + ")?$";
     }
 
     @Bean
-    @Qualifier("xkcdHandler")
     public Handler xkcdHandler(XkcdClient xkcdClient) {
         return new XkcdHandler(xkcdClient);
     }
@@ -45,13 +42,11 @@ public class XkcdConfig {
     }
 
     @Bean
-    @Qualifier("cxkcdWebClient")
     WebClient cxkcdWebClient(@Value("https://c.xkcd.com") String cxkcdUrl) {
         return WebClient.create(cxkcdUrl);
     }
 
     @Bean
-    @Qualifier("xkcdWebClient")
     WebClient xkcdWebClient(@Value("https://xkcd.com") String xkcdUrl) {
         return WebClient.create(xkcdUrl);
     }

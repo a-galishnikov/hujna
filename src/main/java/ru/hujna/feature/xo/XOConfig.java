@@ -21,19 +21,16 @@ public class XOConfig {
     }
 
     @Bean
-    @Qualifier("xoMsgMatcher")
     public Matcher xoMsgMatcher(@Qualifier("xoMsgRegex") String regex) {
         return new MessageRegexMatcher(regex);
     }
 
     @Bean
-    @Qualifier("xoMsgRegex")
     String xoMsgRegex(BotConfig botConfig) {
         return "^\\/xo(" + botConfig.getBotUsername() + ")?$";
     }
 
     @Bean
-    @Qualifier("xoMsgHandler")
     public Handler xoMsgHandler(XOSessionCash sessionCash) {
         return new XOStartHandler(sessionCash);
     }
@@ -45,19 +42,16 @@ public class XOConfig {
     }
 
     @Bean
-    @Qualifier("xoCallbackMatcher")
     public Matcher xoCallbackMatcher(@Qualifier("xoCallbackRegex") String regex) {
         return new CallbackRegexMatcher(regex);
     }
 
     @Bean
-    @Qualifier("xoCallbackRegex")
     String xoCallbackRegex() {
         return "^xo:\\d+:[0-2]:[0-2]:[EOX]$";
     }
 
     @Bean
-    @Qualifier("xoCallbackHandler")
     public Handler xoCallbackHandler(XOSessionCash sessionCash) {
         return new XOCallbackHandler(sessionCash);
     }

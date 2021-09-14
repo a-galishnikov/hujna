@@ -17,13 +17,11 @@ public class HujnaConfig {
     }
 
     @Bean
-    @Qualifier("hujnaMatcher")
     public Matcher hujnaMatcher() {
         return new MessageRegexMatcher("^([AaАа])+[^A-Za-zА-Яа-я0-9]{0,5}$");
     }
 
     @Bean
-    @Qualifier("hujnaHandler")
     public Handler hujnaHandler() {
         return new HujnaHandler();
     }
