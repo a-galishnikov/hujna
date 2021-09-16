@@ -78,21 +78,19 @@ public class XOUtil {
             var rowSumO = 0;
             for (int j = 0; j < dim; j++) {
                 switch (field[i][j]) {
-                    case E:
-                        hasMoreMoves = true;
-                        break;
-                    case O:
+                    case E -> hasMoreMoves = true;
+                    case O -> {
                         rowSumO++;
                         colSumO[j]++;
                         if (i == j) diag1SumO++;
                         if (i == dim - j - 1) diag2SumO++;
-                        break;
-                    case X:
+                    }
+                    case X -> {
                         colSumX[j]++;
                         rowSumX++;
                         if (i == j) diag1SumX++;
                         if (i == dim - j - 1) diag2SumX++;
-                        break;
+                    }
                 }
                 if ((i == dim - 1 || j == dim - 1) &&
                         (rowSumO == dim || rowSumX == dim ||

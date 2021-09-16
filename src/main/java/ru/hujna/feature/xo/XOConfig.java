@@ -29,7 +29,7 @@ public class XOConfig {
 
     @Bean
     String xoMsgRegex(BotConfig botConfig) {
-        return "^\\/xo(" + botConfig.getBotUsername() + ")?$";
+        return "^\\/xo(" + botConfig.botUsername() + ")?$";
     }
 
     @Bean

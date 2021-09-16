@@ -5,15 +5,16 @@ import ru.hujna.feature.xo.model.XO;
 import ru.hujna.feature.xo.model.XOState;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.hujna.feature.xo.model.XO.*;
 
 public class XOUtilCalcStateTest {
 
     @Test
     void tie() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.X},
-                {XO.O, XO.O, XO.X},
-                {XO.X, XO.X, XO.O}
+                {X, O, X},
+                {O, O, X},
+                {X, X, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_TIE, state);
@@ -22,9 +23,9 @@ public class XOUtilCalcStateTest {
     @Test
     void horizontalWinX() {
         var field = new XO[][]{
-                {XO.X, XO.X, XO.X},
-                {XO.O, XO.O, XO.X},
-                {XO.X, XO.O, XO.O}
+                {X, X, X},
+                {O, O, X},
+                {X, O, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -33,9 +34,9 @@ public class XOUtilCalcStateTest {
     @Test
     void horizontalWinO() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.X},
-                {XO.O, XO.O, XO.O},
-                {XO.X, XO.X, XO.O}
+                {X, O, X},
+                {O, O, O},
+                {X, X, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -44,9 +45,9 @@ public class XOUtilCalcStateTest {
     @Test
     void verticalWinX() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.X},
-                {XO.O, XO.O, XO.X},
-                {XO.O, XO.X, XO.X}
+                {X, O, X},
+                {O, O, X},
+                {O, X, X}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -55,9 +56,9 @@ public class XOUtilCalcStateTest {
     @Test
     void verticalWinO() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.X},
-                {XO.O, XO.O, XO.X},
-                {XO.X, XO.O, XO.O}
+                {X, O, X},
+                {O, O, X},
+                {X, O, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -66,9 +67,9 @@ public class XOUtilCalcStateTest {
     @Test
     void diagonal1WinX() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.X},
-                {XO.O, XO.X, XO.O},
-                {XO.O, XO.X, XO.X}
+                {X, O, X},
+                {O, X, O},
+                {O, X, X}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -77,9 +78,9 @@ public class XOUtilCalcStateTest {
     @Test
     void diagonal1WinO() {
         var field = new XO[][]{
-                {XO.O, XO.X, XO.X},
-                {XO.X, XO.O, XO.O},
-                {XO.O, XO.X, XO.O}
+                {O, X, X},
+                {X, O, O},
+                {O, X, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -88,9 +89,9 @@ public class XOUtilCalcStateTest {
     @Test
     void diagonal2WinX() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.X},
-                {XO.O, XO.X, XO.O},
-                {XO.X, XO.X, XO.O}
+                {X, O, X},
+                {O, X, O},
+                {X, X, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -99,9 +100,9 @@ public class XOUtilCalcStateTest {
     @Test
     void diagonal2WinO() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.O},
-                {XO.O, XO.O, XO.X},
-                {XO.O, XO.X, XO.O}
+                {X, O, O},
+                {O, O, X},
+                {O, X, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.FINISHED_WIN, state);
@@ -110,9 +111,9 @@ public class XOUtilCalcStateTest {
     @Test
     void stillPlaying() {
         var field = new XO[][]{
-                {XO.X, XO.O, XO.O},
-                {XO.O, XO.E, XO.X},
-                {XO.O, XO.X, XO.O}
+                {X, O, O},
+                {O, E, X},
+                {O, X, O}
         };
         var state = XOUtil.calcState(field);
         assertEquals(XOState.PLAYING, state);

@@ -22,7 +22,7 @@ public class XkcdHandler implements Handler {
     @Override
     public List<? extends PartialBotApiMethod<? extends Serializable>> handle(Update update) {
         return Optional.ofNullable(client.random())
-                .map(comic -> Collections.singletonList(
+                .map(comic -> List.of(
                         SendPhoto.builder()
                                 .chatId(update.getMessage().getChatId().toString())
                                 .caption(buildCaption(comic))

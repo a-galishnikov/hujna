@@ -12,11 +12,11 @@ abstract class BotExecuteDecorator extends TelegramLongPollingBot {
 
     @SneakyThrows
     public <T extends Serializable> Serializable execute(PartialBotApiMethod<T> method) {
-        if (method instanceof BotApiMethod) {
-            return execute((BotApiMethod<T>) method);
+        if (method instanceof BotApiMethod<T> botMethod) {
+            return execute(botMethod);
         }
-        if (method instanceof SendPhoto) {
-            return execute((SendPhoto) method);
+        if (method instanceof SendPhoto sendPhoto) {
+            return execute(sendPhoto);
         }
         throw new UnsupportedOperationException("Method type not supported: " + method.getClass());
     }
