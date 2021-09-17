@@ -19,12 +19,12 @@ public class Bot extends BotExecuteDecorator {
 
     @Override
     public String getBotUsername() {
-        return config.botUsername();
+        return config.getBotUsername();
     }
 
     @Override
     public String getBotToken() {
-        return config.botToken();
+        return config.getBotToken();
     }
 
     @Override

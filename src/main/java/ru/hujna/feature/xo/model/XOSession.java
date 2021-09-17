@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.ToString;
 import ru.hujna.feature.xo.XOUtil;
 
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,10 +22,10 @@ public class XOSession {
     private final Integer messageId;
 
     @NonNull
-    private final XOState state;
+    private final XOPlayers players;
 
     @NonNull
-    private final XOType type;
+    private final XOState state;
 
     @Builder.Default
     @NonNull

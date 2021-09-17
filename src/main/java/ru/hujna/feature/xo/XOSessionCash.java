@@ -23,7 +23,7 @@ public class XOSessionCash {
 
     public void put(XOSession session) {
         var prev = cash.put(sessionKey(session), session);
-        log.info("put\nnew:{}\nprev:{}", session, prev);
+        log.info("put\nprev:{}\nnew:{}", prev, session);
     }
 
     public void remove(XOSession session) {

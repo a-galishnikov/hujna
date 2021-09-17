@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hujna.bot.BotConfig;
 import ru.hujna.feature.xo.handler.XOCallbackHandler;
+import ru.hujna.feature.xo.handler.XOJoinHandler;
 import ru.hujna.feature.xo.handler.XOStartHandler;
 import ru.hujna.processor.Processor;
 import ru.hujna.processor.handler.Handler;
@@ -29,7 +30,7 @@ public class XOConfig {
 
     @Bean
     String xoMsgRegex(BotConfig botConfig) {
-        return "^\\/xo(" + botConfig.botUsername() + ")?$";
+        return "^\\/xo(" + botConfig.getBotUsername() + ")?$";
     }
 
     @Bean
@@ -50,11 +51,34 @@ public class XOConfig {
 
     @Bean
     String xoCallbackRegex() {
-        return "^xo:\\d+:[0-2]:[0-2]:[EOX]$";
+        return "^xoMove:\\d+:[0-2]:[0-2]:[EOX]$";
     }
 
     @Bean
     public Handler xoCallbackHandler(XOSessionCash sessionCash) {
         return new XOCallbackHandler(sessionCash);
     }
+
+    @Bean
+    public Processor xoJoinProcessor(@Qualifier("xoJoinMatcher") Matcher matcher,
+                                     @Qualifier("xoJoinHandler") Handler handler) {
+        return new Processor(matcher, handler);
+    }
+
+    @Bean
+    public Matcher xoJoinMatcher(@Qualifier("xoJoinRegex") String regex) {
+        return new CallbackRegexMatcher(regex);
+    }
+
+    @Bean
+    String xoJoinRegex() {
+        return "^xoJoin:\\d+$";
+    }
+
+    @Bean
+    public Handler xoJoinHandler(XOSessionCash sessionCash) {
+        return new XOJoinHandler(sessionCash);
+    }
+
+
 }

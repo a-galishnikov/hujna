@@ -1,5 +1,6 @@
 package ru.hujna.feature.xo;
 
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.hujna.feature.xo.model.*;
@@ -13,21 +14,12 @@ public class XOUtil {
     private static final int DIM = 3;
     private static final XO[][] EMPTY_FIELD = emptyField(DIM);
 
-    public static XOSession initPvPSession(Long chatId, Integer messageId) {
+    public static XOSession initPvPSession(Long chatId, Integer messageId, Long starterId) {
         return XOSession.builder()
                 .chatId(chatId)
                 .messageId(messageId)
-                .type(XOType.PVP)
+                .players(XOPlayers.of(starterId, XO.random()))
                 .state(XOState.NEW)
-                .build();
-    }
-
-    public static XOSession initPvESession(Long chatId, Integer messageId) {
-        return XOSession.builder()
-                .chatId(chatId)
-                .messageId(messageId)
-                .type(XOType.PVE)
-                .state(XOState.STARTED)
                 .build();
     }
 
@@ -56,10 +48,21 @@ public class XOUtil {
         return XOSession.builder()
                 .chatId(session.getChatId())
                 .messageId(session.getMessageId())
-                .type(session.getType())
+                .players(session.getPlayers())
                 .lastXo(move.xo())
                 .field(field)
                 .state(state)
+                .build();
+    }
+
+    public static XOSession join(XOSession session, long opponentId) {
+        return XOSession.builder()
+                .chatId(session.getChatId())
+                .messageId(session.getMessageId())
+                .players(XOPlayers.of(session.getPlayers(), opponentId))
+                .lastXo(session.getLastXo())
+                .field(session.getField())
+                .state(XOState.STARTED)
                 .build();
     }
 
@@ -94,9 +97,9 @@ public class XOUtil {
                 }
                 if ((i == dim - 1 || j == dim - 1) &&
                         (rowSumO == dim || rowSumX == dim ||
-                        diag1SumO == dim || diag1SumX == dim ||
-                        diag2SumO == dim || diag2SumX == dim ||
-                        colSumO[j] == dim || colSumX[j] == dim)) {
+                                diag1SumO == dim || diag1SumX == dim ||
+                                diag2SumO == dim || diag2SumX == dim ||
+                                colSumO[j] == dim || colSumX[j] == dim)) {
                     return XOState.FINISHED_WIN;
                 }
             }
@@ -141,7 +144,7 @@ public class XOUtil {
     private static InlineKeyboardButton button(int messageId, int i, int j, XO current, XO callback) {
         String nextXo = current == XO.E ? callback.name() : "NOP";
         return InlineKeyboardButton.builder()
-                .callbackData(String.format("xo:%d:%d:%d:%s", messageId, i, j, nextXo))
+                .callbackData(String.format("xoMove:%d:%d:%d:%s", messageId, i, j, nextXo))
                 .text(current.getCell())
                 .build();
     }
@@ -151,9 +154,22 @@ public class XOUtil {
         return new XOMove(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), XO.valueOf(parts[4]));
     }
 
-    public static boolean validate(XOSession session, XOMove move) {
+    public static XOJoin parseJoin(String data) {
+        String[] parts = data.split(":");
+        return new XOJoin(Integer.parseInt(parts[1]));
+    }
+
+    public static boolean validate(XOSession session, XOMove move, long userId) {
         boolean cellIsEmpty = session.getField()[move.x()][move.y()] == XO.E;
         boolean moveIsNotDuplicated = session.getLastXo() != move.xo();
-        return cellIsEmpty && moveIsNotDuplicated;
+        var expectedNextUser = session.getPlayers().get(move.xo());
+        boolean userIsAuthorized = expectedNextUser.getUserId() == userId;
+        return cellIsEmpty && moveIsNotDuplicated && userIsAuthorized;
+    }
+
+    public static String name(User user) {
+        return user.getUserName() == null || user.getUserName().isBlank()
+                ? String.format("%s %s", user.getFirstName(), user.getLastName())
+                : user.getUserName();
     }
 }

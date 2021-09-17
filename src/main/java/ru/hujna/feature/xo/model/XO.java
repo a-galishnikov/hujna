@@ -2,13 +2,15 @@ package ru.hujna.feature.xo.model;
 
 import lombok.Getter;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 @Getter
 public enum XO {
     E("⬜"),
 
     O("⭕"),
 
-    X("❌"){
+    X("❌") {
         @Override
         public XO reverse() {
             return O;
@@ -23,5 +25,9 @@ public enum XO {
 
     XO(String cell) {
         this.cell = cell;
+    }
+
+    public static XO random() {
+        return ThreadLocalRandom.current().nextBoolean() ? X : O;
     }
 }

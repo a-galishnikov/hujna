@@ -27,7 +27,7 @@ public class XkcdConfig {
 
     @Bean
     String xkcdRegex(BotConfig botConfig) {
-        return "^\\/xkcd(" + botConfig.botUsername() + ")?$";
+        return "^\\/xkcd(" + botConfig.getBotUsername() + ")?$";
     }
 
     @Bean

@@ -30,23 +30,23 @@ public class XOCallbackHandler implements Handler {
         var callback = update.getCallbackQuery();
         var chatId = callback.getMessage().getChatId();
         var chatIdStr = chatId.toString();
-        XOMove move = XOUtil.parseMove(update.getCallbackQuery().getData());
+
+        var move = XOUtil.parseMove(callback.getData());
         var initialMessageId = move.messageId();
         var callbackMessageId = callback.getMessage().getMessageId();
+        var userId = callback.getFrom().getId();
 
         return sessionCash.get(chatId, initialMessageId).map(session -> {
             var lockAcquired = false;
             try {
-                List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
                 lockAcquired = session.getLock().tryLock();
+                List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
                 if (lockAcquired) {
                     switch (session.getState()) {
-                        case NEW:
                         case STARTED:
                         case PLAYING:
-
-                            if (XOUtil.validate(session, move)) {
-                                XOSession newSession = XOUtil.move(session, move);
+                            if (XOUtil.validate(session, move, userId)) {
+                                var newSession = XOUtil.move(session, move);
                                 sessionCash.put(newSession);
 
                                 result = new ArrayList<>();
@@ -65,7 +65,7 @@ public class XOCallbackHandler implements Handler {
                                         var wonMsg = SendMessage.builder()
                                                 .chatId(chatIdStr)
                                                 .replyToMessageId(callbackMessageId)
-                                                .text(callback.getFrom().getUserName() + " won")
+                                                .text(XOUtil.name(callback.getFrom()) + " won")
                                                 .build();
                                         result.add(wonMsg);
                                         break;
@@ -81,6 +81,7 @@ public class XOCallbackHandler implements Handler {
                                 }
                             }
                             break;
+                        case NEW:
                         case CANCELED:
                         case FINISHED_WIN:
                         case FINISHED_TIE:
