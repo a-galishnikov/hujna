@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.hujna.feature.xo.XOSessionCash;
 import ru.hujna.feature.xo.XOUtil;
 import ru.hujna.feature.xo.model.XO;
+import ru.hujna.feature.xo.model.XOSession;
 import ru.hujna.feature.xo.model.XOState;
 import ru.hujna.processor.handler.Handler;
 
@@ -46,7 +47,7 @@ public class XOJoinHandler implements Handler {
                 lockAcquired = session.getLock().tryLock();
                 List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
                 if (lockAcquired) {
-                    if (session.getState() == XOState.NEW) {
+                    if (validate(session, update)) {
                         var newSession = XOUtil.join(session, opponentId);
                         sessionCash.put(newSession);
 
@@ -81,5 +82,14 @@ public class XOJoinHandler implements Handler {
                 }
             }
         }).orElse(Collections.emptyList());
+    }
+
+    private boolean validate(XOSession session, Update update) {
+        boolean appropriateState = session.getState() == XOState.NEW;
+        var callback = update.getCallbackQuery();
+        var chat = callback.getMessage().getChat();
+        boolean isPersonalChat= chat.isUserChat();
+        boolean starterNotOpponent = session.getPlayers().starter().getUserId() != callback.getFrom().getId();
+        return appropriateState && (isPersonalChat || starterNotOpponent);
     }
 }
