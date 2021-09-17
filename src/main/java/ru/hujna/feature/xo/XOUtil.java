@@ -14,21 +14,13 @@ public class XOUtil {
     private static final int DIM = 3;
     private static final XO[][] EMPTY_FIELD = emptyField(DIM);
 
-    public static XOSession initPvPSession(Long chatId, Integer messageId, Long starterId) {
-        return XOSession.builder()
+    public static Game initGame(Long chatId, Integer messageId, Long starterId) {
+        return Game.builder()
                 .chatId(chatId)
                 .messageId(messageId)
-                .players(XOPlayers.of(starterId, XO.random()))
-                .state(XOState.NEW)
+                .players(TwoPlayers.of(starterId, XO.random()))
+                .state(State.NEW)
                 .build();
-    }
-
-    public static String sessionKey(XOSession session) {
-        return sessionKey(session.getChatId(), session.getMessageId());
-    }
-
-    public static String sessionKey(Long chatId, Integer messageId) {
-        return chatId + ":" + messageId;
     }
 
     public static XO[][] emptyField() {
@@ -41,33 +33,33 @@ public class XOUtil {
         return field;
     }
 
-    public static XOSession move(XOSession session, XOMove move) {
-        XO[][] field = move(session.getField(), move);
-        XOState state = calcState(field);
+    public static Game move(Game game, Move move) {
+        XO[][] field = move(game.getField(), move);
+        State state = calcState(field);
 
-        return XOSession.builder()
-                .chatId(session.getChatId())
-                .messageId(session.getMessageId())
-                .players(session.getPlayers())
-                .lastXo(move.xo())
+        return Game.builder()
+                .chatId(game.getChatId())
+                .messageId(game.getMessageId())
+                .players(game.getPlayers())
+                .lastMove(move.xo())
                 .field(field)
                 .state(state)
                 .build();
     }
 
-    public static XOSession join(XOSession session, long opponentId) {
-        return XOSession.builder()
-                .chatId(session.getChatId())
-                .messageId(session.getMessageId())
-                .players(XOPlayers.of(session.getPlayers(), opponentId))
-                .lastXo(session.getLastXo())
-                .field(session.getField())
-                .state(XOState.STARTED)
+    public static Game join(Game game, long opponentId) {
+        return Game.builder()
+                .chatId(game.getChatId())
+                .messageId(game.getMessageId())
+                .players(TwoPlayers.of(game.getPlayers(), opponentId))
+                .lastMove(game.getLastMove())
+                .field(game.getField())
+                .state(State.STARTED)
                 .build();
     }
 
     // TODO: naive implementation, can be optimized
-    static XOState calcState(XO[][] field) {
+    static State calcState(XO[][] field) {
         int dim = field.length;
         var hasMoreMoves = false;
         var diag1SumX = 0;
@@ -100,15 +92,15 @@ public class XOUtil {
                                 diag1SumO == dim || diag1SumX == dim ||
                                 diag2SumO == dim || diag2SumX == dim ||
                                 colSumO[j] == dim || colSumX[j] == dim)) {
-                    return XOState.FINISHED_WIN;
+                    return State.FINISHED_WIN;
                 }
             }
         }
 
-        return hasMoreMoves ? XOState.PLAYING : XOState.FINISHED_TIE;
+        return hasMoreMoves ? State.PLAYING : State.FINISHED_TIE;
     }
 
-    public static XO[][] move(XO[][] field, XOMove move) {
+    public static XO[][] move(XO[][] field, Move move) {
         XO[][] newField = copy(field);
         newField[move.x()][move.y()] = move.xo();
         return newField;
@@ -122,19 +114,19 @@ public class XOUtil {
         return copy;
     }
 
-    public static InlineKeyboardMarkup markup(XOSession session) {
+    public static InlineKeyboardMarkup markup(Game game) {
         return InlineKeyboardMarkup.builder()
-                .keyboard(XOUtil.keyboard(session))
+                .keyboard(XOUtil.keyboard(game))
                 .build();
     }
 
-    private static List<List<InlineKeyboardButton>> keyboard(XOSession session) {
-        XO[][] field = session.getField();
+    private static List<List<InlineKeyboardButton>> keyboard(Game game) {
+        XO[][] field = game.getField();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>(field.length);
         for (int i = 0; i < field.length; i++) {
             List<InlineKeyboardButton> row = new ArrayList<>(field[i].length);
             for (int j = 0; j < field[i].length; j++) {
-                row.add(button(session.getMessageId(), i, j, field[i][j], session.getLastXo().reverse()));
+                row.add(button(game.getMessageId(), i, j, field[i][j], game.getLastMove().reverse()));
             }
             keyboard.add(row);
         }
@@ -149,20 +141,10 @@ public class XOUtil {
                 .build();
     }
 
-    public static XOMove parseMove(String data) {
-        String[] parts = data.split(":");
-        return new XOMove(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), XO.valueOf(parts[4]));
-    }
-
-    public static XOJoin parseJoin(String data) {
-        String[] parts = data.split(":");
-        return new XOJoin(Integer.parseInt(parts[1]));
-    }
-
-    public static boolean validate(XOSession session, XOMove move, long userId) {
-        boolean cellIsEmpty = session.getField()[move.x()][move.y()] == XO.E;
-        boolean moveIsNotDuplicated = session.getLastXo() != move.xo();
-        var expectedNextUser = session.getPlayers().get(move.xo());
+    public static boolean validate(Game game, Move move, long userId) {
+        boolean cellIsEmpty = game.getField()[move.x()][move.y()] == XO.E;
+        boolean moveIsNotDuplicated = game.getLastMove() != move.xo();
+        var expectedNextUser = game.getPlayers().get(move.xo());
         boolean userIsAuthorized = expectedNextUser.getUserId() == userId;
         return cellIsEmpty && moveIsNotDuplicated && userIsAuthorized;
     }

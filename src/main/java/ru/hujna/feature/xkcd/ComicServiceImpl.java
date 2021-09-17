@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-public class XkcdClientImpl implements XkcdClient {
+public class ComicServiceImpl implements ComicService {
     // see https://xkcd.com/json.html
 
     @NonNull
@@ -16,7 +16,7 @@ public class XkcdClientImpl implements XkcdClient {
     private final WebClient cxkcd;
 
     @Override
-    public XkcdComic random() {
+    public Comic random() {
         // https://c.xkcd.com/random/comic/ redirects to e.g. https://xkcd.com/1784/
         return cxkcd.get()
                 .uri("/random/comic/")
@@ -28,24 +28,24 @@ public class XkcdClientImpl implements XkcdClient {
                 .map(loc -> loc.split("/")[3])
                 .map(Integer::parseInt)
                 .map(this::get)
-                .orElseThrow(() -> new XkcdAccessException("Unable to retrieve random comic from xkcd.com"));
+                .orElseThrow(() -> new AccessException("Unable to retrieve random comic from xkcd.com"));
     }
 
     @Override
-    public XkcdComic latest() {
+    public Comic latest() {
         return xkcd.get()
                 .uri("/info.0.json")
                 .retrieve()
-                .bodyToMono(XkcdComic.class)
+                .bodyToMono(Comic.class)
                 .block();
     }
 
     @Override
-    public XkcdComic get(Integer id) {
+    public Comic get(Integer id) {
         return xkcd.get()
                 .uri(String.format("/%d/info.0.json", id))
                 .retrieve()
-                .bodyToMono(XkcdComic.class)
+                .bodyToMono(Comic.class)
                 .block();
     }
 }

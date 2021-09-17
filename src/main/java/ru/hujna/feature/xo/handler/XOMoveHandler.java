@@ -7,10 +7,11 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.hujna.feature.xo.model.XOMove;
-import ru.hujna.feature.xo.model.XOSession;
-import ru.hujna.feature.xo.XOSessionCash;
+import ru.hujna.feature.xo.GameCache;
 import ru.hujna.feature.xo.XOUtil;
+import ru.hujna.lock.TryLock;
+import ru.hujna.feature.xo.model.Move;
+import ru.hujna.feature.xo.parse.Parser;
 import ru.hujna.processor.handler.Handler;
 
 import java.io.Serializable;
@@ -20,10 +21,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public class XOCallbackHandler implements Handler {
+public class XOMoveHandler implements Handler {
 
     @NonNull
-    private final XOSessionCash sessionCash;
+    private final GameCache cache;
+
+    @NonNull
+    private final Parser<Move> parser;
 
     @Override
     public List<BotApiMethod<? extends Serializable>> handle(Update update) {
@@ -31,23 +35,21 @@ public class XOCallbackHandler implements Handler {
         var chatId = callback.getMessage().getChatId();
         var chatIdStr = chatId.toString();
 
-        var move = XOUtil.parseMove(callback.getData());
+        var move = parser.parse(callback.getData());
         var initialMessageId = move.messageId();
         var callbackMessageId = callback.getMessage().getMessageId();
         var userId = callback.getFrom().getId();
 
-        return sessionCash.get(chatId, initialMessageId).map(session -> {
-            var lockAcquired = false;
-            try {
-                lockAcquired = session.getLock().tryLock();
+        return cache.get(chatId, initialMessageId).map(game -> {
+            try(var lock = TryLock.of(game.getLock())) {
                 List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
-                if (lockAcquired) {
-                    switch (session.getState()) {
+                if (lock.isLockAcquired()) {
+                    switch (game.getState()) {
                         case STARTED:
                         case PLAYING:
-                            if (XOUtil.validate(session, move, userId)) {
-                                var newSession = XOUtil.move(session, move);
-                                sessionCash.put(newSession);
+                            if (XOUtil.validate(game, move, userId)) {
+                                var gameNext = XOUtil.move(game, move);
+                                cache.put(gameNext);
 
                                 result = new ArrayList<>();
 
@@ -55,12 +57,12 @@ public class XOCallbackHandler implements Handler {
                                         .builder()
                                         .messageId(callbackMessageId)
                                         .chatId(chatIdStr)
-                                        .replyMarkup(XOUtil.markup(newSession))
+                                        .replyMarkup(XOUtil.markup(gameNext))
                                         .build();
 
                                 result.add(editField);
 
-                                switch (newSession.getState()) {
+                                switch (gameNext.getState()) {
                                     case FINISHED_WIN:
                                         var wonMsg = SendMessage.builder()
                                                 .chatId(chatIdStr)
@@ -90,10 +92,6 @@ public class XOCallbackHandler implements Handler {
                     }
                 }
                 return result;
-            } finally {
-                if (lockAcquired) {
-                    session.getLock().unlock();
-                }
             }
         }).orElse(Collections.emptyList());
     }

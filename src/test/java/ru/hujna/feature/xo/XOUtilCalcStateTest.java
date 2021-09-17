@@ -2,7 +2,7 @@ package ru.hujna.feature.xo;
 
 import org.junit.jupiter.api.Test;
 import ru.hujna.feature.xo.model.XO;
-import ru.hujna.feature.xo.model.XOState;
+import ru.hujna.feature.xo.model.State;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.hujna.feature.xo.model.XO.*;
@@ -17,7 +17,7 @@ public class XOUtilCalcStateTest {
                 {X, X, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_TIE, state);
+        assertEquals(State.FINISHED_TIE, state);
     }
 
     @Test
@@ -28,7 +28,7 @@ public class XOUtilCalcStateTest {
                 {X, O, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class XOUtilCalcStateTest {
                 {X, X, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class XOUtilCalcStateTest {
                 {O, X, X}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class XOUtilCalcStateTest {
                 {X, O, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class XOUtilCalcStateTest {
                 {O, X, X}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class XOUtilCalcStateTest {
                 {O, X, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class XOUtilCalcStateTest {
                 {X, X, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class XOUtilCalcStateTest {
                 {O, X, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.FINISHED_WIN, state);
+        assertEquals(State.FINISHED_WIN, state);
     }
 
     @Test
@@ -116,6 +116,6 @@ public class XOUtilCalcStateTest {
                 {O, X, O}
         };
         var state = XOUtil.calcState(field);
-        assertEquals(XOState.PLAYING, state);
+        assertEquals(State.PLAYING, state);
     }
 }

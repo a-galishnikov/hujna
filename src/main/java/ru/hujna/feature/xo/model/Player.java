@@ -5,13 +5,13 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class XOPlayer {
+public class Player {
 
     private final long userId;
     private final XO xo;
     private final boolean gameStarter;
 
-    XOPlayer(long userId, XO xo, boolean gameStarter) {
+    Player(long userId, XO xo, boolean gameStarter) {
         if (xo == null || xo == XO.E) {
             throw new IllegalArgumentException("XOPlayer can only be assigned to X or O");
         }

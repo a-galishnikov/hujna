@@ -8,11 +8,14 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.hujna.feature.xo.XOSessionCash;
+import ru.hujna.feature.xo.GameCache;
 import ru.hujna.feature.xo.XOUtil;
+import ru.hujna.lock.TryLock;
+import ru.hujna.feature.xo.model.Join;
 import ru.hujna.feature.xo.model.XO;
-import ru.hujna.feature.xo.model.XOSession;
-import ru.hujna.feature.xo.model.XOState;
+import ru.hujna.feature.xo.model.Game;
+import ru.hujna.feature.xo.model.State;
+import ru.hujna.feature.xo.parse.Parser;
 import ru.hujna.processor.handler.Handler;
 
 import java.io.Serializable;
@@ -25,8 +28,10 @@ import java.util.List;
 public class XOJoinHandler implements Handler {
 
     @NonNull
-    private final XOSessionCash sessionCash;
+    private final GameCache gameCache;
 
+    @NonNull
+    private final Parser<Join> parser;
 
     @Override
     public List<? extends PartialBotApiMethod<? extends Serializable>> handle(Update update) {
@@ -37,22 +42,20 @@ public class XOJoinHandler implements Handler {
         var opponent = callback.getFrom();
         var opponentId = opponent.getId();
 
-        var join = XOUtil.parseJoin(callback.getData());
+        var join = parser.parse(callback.getData());
         var initialMessageId = join.messageId();
         var callbackMessageId = msg.getMessageId();
 
-        return sessionCash.get(chatId, initialMessageId).map(session -> {
-            var lockAcquired = false;
-            try {
-                lockAcquired = session.getLock().tryLock();
+        return gameCache.get(chatId, initialMessageId).map(game -> {
+            try (var lock = TryLock.of(game.getLock())) {
                 List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
-                if (lockAcquired) {
-                    if (validate(session, update)) {
-                        var newSession = XOUtil.join(session, opponentId);
-                        sessionCash.put(newSession);
+                if (lock.isLockAcquired()) {
+                    if (validate(game, update)) {
+                        var gameNext = XOUtil.join(game, opponentId);
+                        gameCache.put(gameNext);
 
                         result = new ArrayList<>();
-                        var starter = newSession.getPlayers().starter();
+                        var starter = gameNext.getPlayers().starter();
 
                         var editMessage = EditMessageText.builder()
                                 .messageId(callbackMessageId)
@@ -70,26 +73,22 @@ public class XOJoinHandler implements Handler {
                                 .builder()
                                 .messageId(callbackMessageId)
                                 .chatId(chatId.toString())
-                                .replyMarkup(XOUtil.markup(newSession))
+                                .replyMarkup(XOUtil.markup(gameNext))
                                 .build();
                         result.add(editKeyboard);
                     }
                 }
                 return result;
-            } finally {
-                if (lockAcquired) {
-                    session.getLock().unlock();
-                }
             }
         }).orElse(Collections.emptyList());
     }
 
-    private boolean validate(XOSession session, Update update) {
-        boolean appropriateState = session.getState() == XOState.NEW;
+    private boolean validate(Game game, Update update) {
+        boolean appropriateState = game.getState() == State.NEW;
         var callback = update.getCallbackQuery();
         var chat = callback.getMessage().getChat();
         boolean isPersonalChat= chat.isUserChat();
-        boolean starterNotOpponent = session.getPlayers().starter().getUserId() != callback.getFrom().getId();
+        boolean starterNotOpponent = game.getPlayers().starter().getUserId() != callback.getFrom().getId();
         return appropriateState && (isPersonalChat || starterNotOpponent);
     }
 }

@@ -12,11 +12,11 @@ public class XkcdClientTest {
 
     WebClient xkcd = WebClient.create("https://xkcd.com");
     WebClient cxkcd = WebClient.create("https://c.xkcd.com");
-    XkcdClient client = new XkcdClientImpl(xkcd, cxkcd);
+    ComicService client = new ComicServiceImpl(xkcd, cxkcd);
 
     @Test
     void testRandom() {
-        XkcdComic randomComic = client.random();
+        Comic randomComic = client.random();
 
         assertNotNull(randomComic);
         assertNotNull(randomComic.num());
@@ -24,7 +24,7 @@ public class XkcdClientTest {
 
     @Test
     void testLatest() {
-        XkcdComic randomComic = client.latest();
+        Comic randomComic = client.latest();
 
         assertNotNull(randomComic);
         assertNotNull(randomComic.num());
@@ -32,7 +32,7 @@ public class XkcdClientTest {
 
     @Test
     void testGetById() {
-        XkcdComic comic = client.get(3);
+        Comic comic = client.get(3);
 
         assertEquals("1", comic.month());
         assertEquals("2006", comic.year());

@@ -8,29 +8,29 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ToString
-public class XOPlayers {
-    private final Map<XO, XOPlayer> players;
+public class TwoPlayers {
+    private final Map<XO, Player> players;
 
-    public static XOPlayers of(XOPlayers current, long opponentId) {
+    public static TwoPlayers of(TwoPlayers current, long opponentId) {
         var starter = current.single();
         var xo = starter.getXo().reverse();
-        return XOPlayers.of(starter, new XOPlayer(opponentId, xo, false));
+        return TwoPlayers.of(starter, new Player(opponentId, xo, false));
     }
 
-    public static XOPlayers of(long starterId, XO xo) {
-        return XOPlayers.of(new XOPlayer(starterId, xo, true));
+    public static TwoPlayers of(long starterId, XO xo) {
+        return TwoPlayers.of(new Player(starterId, xo, true));
     }
 
-    public static XOPlayers of(XOPlayer... players) {
-        return new XOPlayers(players);
+    public static TwoPlayers of(Player... players) {
+        return new TwoPlayers(players);
     }
 
-    private XOPlayers(XOPlayer... players) {
+    private TwoPlayers(Player... players) {
         validate(players);
-        this.players = Arrays.stream(players).collect(Collectors.toUnmodifiableMap(XOPlayer::getXo, p -> p));
+        this.players = Arrays.stream(players).collect(Collectors.toUnmodifiableMap(Player::getXo, p -> p));
     }
 
-    private void validate(XOPlayer[] players) {
+    private void validate(Player[] players) {
         Objects.requireNonNull(players);
         if (players.length == 0 || players.length > 2) {
             throw new IllegalArgumentException("Expecting one or two players, found: " + players.length);
@@ -44,19 +44,19 @@ public class XOPlayers {
         return players.size();
     }
 
-    public XOPlayer get(XO xo) {
+    public Player get(XO xo) {
         return players.get(xo);
     }
 
-    public XOPlayer getX() {
+    public Player getX() {
         return get(XO.X);
     }
 
-    public XOPlayer getO() {
+    public Player getO() {
         return get(XO.O);
     }
 
-    public XOPlayer single() {
+    public Player single() {
         if (players.size() != 1) {
             throw new IllegalStateException("Expected one player, found: " + players.size());
         }
@@ -64,7 +64,7 @@ public class XOPlayers {
         return xPlayer == null ? getO() : xPlayer;
     }
 
-    public XOPlayer starter() {
+    public Player starter() {
         return getX() != null && getX().isGameStarter() ? getX() : getO();
     }
 }

@@ -6,14 +6,13 @@ import lombok.NonNull;
 import lombok.ToString;
 import ru.hujna.feature.xo.XOUtil;
 
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Builder
 @Getter
 @ToString
-public class XOSession {
+public class Game {
 
     @NonNull
     private final Long chatId;
@@ -22,14 +21,14 @@ public class XOSession {
     private final Integer messageId;
 
     @NonNull
-    private final XOPlayers players;
+    private final TwoPlayers players;
 
     @NonNull
-    private final XOState state;
+    private final State state;
 
     @Builder.Default
     @NonNull
-    private final XO lastXo = XO.E;
+    private final XO lastMove = XO.E;
 
     @Builder.Default
     @NonNull

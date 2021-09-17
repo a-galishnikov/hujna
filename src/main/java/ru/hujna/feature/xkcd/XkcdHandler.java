@@ -17,11 +17,11 @@ import java.util.Optional;
 public class XkcdHandler implements Handler {
 
     @NonNull
-    private final XkcdClient client;
+    private final ComicService service;
 
     @Override
     public List<? extends PartialBotApiMethod<? extends Serializable>> handle(Update update) {
-        return Optional.ofNullable(client.random())
+        return Optional.ofNullable(service.random())
                 .map(comic -> List.of(
                         SendPhoto.builder()
                                 .chatId(update.getMessage().getChatId().toString())
@@ -32,7 +32,7 @@ public class XkcdHandler implements Handler {
                 .orElse(Collections.emptyList());
     }
 
-    private String buildCaption(XkcdComic comic) {
+    private String buildCaption(Comic comic) {
         var caption = new StringBuilder();
 
         if (comic.link() == null || comic.link().isBlank()) {

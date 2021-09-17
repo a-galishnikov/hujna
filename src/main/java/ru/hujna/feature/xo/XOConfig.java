@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.hujna.bot.BotConfig;
-import ru.hujna.feature.xo.handler.XOCallbackHandler;
+import ru.hujna.feature.xo.handler.XOHandler;
 import ru.hujna.feature.xo.handler.XOJoinHandler;
-import ru.hujna.feature.xo.handler.XOStartHandler;
+import ru.hujna.feature.xo.handler.XOMoveHandler;
+import ru.hujna.feature.xo.model.Join;
+import ru.hujna.feature.xo.model.Move;
+import ru.hujna.feature.xo.parse.Parser;
 import ru.hujna.processor.Processor;
 import ru.hujna.processor.handler.Handler;
 import ru.hujna.processor.matcher.CallbackRegexMatcher;
@@ -34,29 +37,29 @@ public class XOConfig {
     }
 
     @Bean
-    public Handler xoMsgHandler(XOSessionCash sessionCash) {
-        return new XOStartHandler(sessionCash);
+    public Handler xoMsgHandler(GameCache gameCache) {
+        return new XOHandler(gameCache);
     }
 
     @Bean
-    public Processor xoCallbackProcessor(@Qualifier("xoCallbackMatcher") Matcher matcher,
-                                         @Qualifier("xoCallbackHandler") Handler handler) {
+    public Processor xoMoveProcessor(@Qualifier("xoMoveMatcher") Matcher matcher,
+                                     @Qualifier("xoMoveHandler") Handler handler) {
         return new Processor(matcher, handler);
     }
 
     @Bean
-    public Matcher xoCallbackMatcher(@Qualifier("xoCallbackRegex") String regex) {
+    public Matcher xoMoveMatcher(@Qualifier("xoMoveRegex") String regex) {
         return new CallbackRegexMatcher(regex);
     }
 
     @Bean
-    String xoCallbackRegex() {
+    String xoMoveRegex() {
         return "^xoMove:\\d+:[0-2]:[0-2]:[EOX]$";
     }
 
     @Bean
-    public Handler xoCallbackHandler(XOSessionCash sessionCash) {
-        return new XOCallbackHandler(sessionCash);
+    public Handler xoMoveHandler(GameCache gameCache, Parser<Move> parser) {
+        return new XOMoveHandler(gameCache, parser);
     }
 
     @Bean
@@ -76,8 +79,8 @@ public class XOConfig {
     }
 
     @Bean
-    public Handler xoJoinHandler(XOSessionCash sessionCash) {
-        return new XOJoinHandler(sessionCash);
+    public Handler xoJoinHandler(GameCache gameCache, Parser<Join> parser) {
+        return new XOJoinHandler(gameCache, parser);
     }
 
 

@@ -31,14 +31,14 @@ public class XkcdConfig {
     }
 
     @Bean
-    public Handler xkcdHandler(XkcdClient xkcdClient) {
+    public Handler xkcdHandler(ComicService xkcdClient) {
         return new XkcdHandler(xkcdClient);
     }
 
     @Bean
-    XkcdClient xkcdClient(@Qualifier("xkcdWebClient") WebClient xkcdClient,
-                          @Qualifier("cxkcdWebClient") WebClient cxkcdClient) {
-        return new XkcdClientImpl(xkcdClient, cxkcdClient);
+    ComicService xkcdClient(@Qualifier("xkcdWebClient") WebClient xkcdClient,
+                            @Qualifier("cxkcdWebClient") WebClient cxkcdClient) {
+        return new ComicServiceImpl(xkcdClient, cxkcdClient);
     }
 
     @Bean

@@ -1,6 +1,6 @@
 package ru.hujna.feature.xkcd;
 
-public record XkcdComic(
+public record Comic(
         Integer num,
         String year,
         String month,
@@ -12,4 +12,5 @@ public record XkcdComic(
         String alt,
         String transcript,
         String img
-) {}
+) {
+}
