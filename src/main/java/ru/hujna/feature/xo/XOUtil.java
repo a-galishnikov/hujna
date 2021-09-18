@@ -1,27 +1,16 @@
 package ru.hujna.feature.xo;
 
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.hujna.feature.xo.model.*;
+import ru.hujna.feature.xo.model.Move;
+import ru.hujna.feature.xo.model.State;
+import ru.hujna.feature.xo.model.XO;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class XOUtil {
 
     private static final int DIM = 3;
     private static final XO[][] EMPTY_FIELD = emptyField(DIM);
-
-    public static Game initGame(Long chatId, Integer messageId, Long starterId) {
-        return Game.builder()
-                .chatId(chatId)
-                .messageId(messageId)
-                .players(TwoPlayers.of(starterId, XO.random()))
-                .state(State.NEW)
-                .build();
-    }
 
     public static XO[][] emptyField() {
         return EMPTY_FIELD;
@@ -33,33 +22,8 @@ public class XOUtil {
         return field;
     }
 
-    public static Game move(Game game, Move move) {
-        XO[][] field = move(game.getField(), move);
-        State state = calcState(field);
-
-        return Game.builder()
-                .chatId(game.getChatId())
-                .messageId(game.getMessageId())
-                .players(game.getPlayers())
-                .lastMove(move.xo())
-                .field(field)
-                .state(state)
-                .build();
-    }
-
-    public static Game join(Game game, long opponentId) {
-        return Game.builder()
-                .chatId(game.getChatId())
-                .messageId(game.getMessageId())
-                .players(TwoPlayers.of(game.getPlayers(), opponentId))
-                .lastMove(game.getLastMove())
-                .field(game.getField())
-                .state(State.STARTED)
-                .build();
-    }
-
     // TODO: naive implementation, can be optimized
-    static State calcState(XO[][] field) {
+    public static State calcState(XO[][] field) {
         int dim = field.length;
         var hasMoreMoves = false;
         var diag1SumX = 0;
@@ -112,41 +76,6 @@ public class XOUtil {
             System.arraycopy(arr[i], 0, copy[i], 0, DIM);
         }
         return copy;
-    }
-
-    public static InlineKeyboardMarkup markup(Game game) {
-        return InlineKeyboardMarkup.builder()
-                .keyboard(XOUtil.keyboard(game))
-                .build();
-    }
-
-    private static List<List<InlineKeyboardButton>> keyboard(Game game) {
-        XO[][] field = game.getField();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>(field.length);
-        for (int i = 0; i < field.length; i++) {
-            List<InlineKeyboardButton> row = new ArrayList<>(field[i].length);
-            for (int j = 0; j < field[i].length; j++) {
-                row.add(button(game.getMessageId(), i, j, field[i][j], game.getLastMove().reverse()));
-            }
-            keyboard.add(row);
-        }
-        return keyboard;
-    }
-
-    private static InlineKeyboardButton button(int messageId, int i, int j, XO current, XO callback) {
-        String nextXo = current == XO.E ? callback.name() : "NOP";
-        return InlineKeyboardButton.builder()
-                .callbackData(String.format("xoMove:%d:%d:%d:%s", messageId, i, j, nextXo))
-                .text(current.getCell())
-                .build();
-    }
-
-    public static boolean validate(Game game, Move move, long userId) {
-        boolean cellIsEmpty = game.getField()[move.x()][move.y()] == XO.E;
-        boolean moveIsNotDuplicated = game.getLastMove() != move.xo();
-        var expectedNextUser = game.getPlayers().get(move.xo());
-        boolean userIsAuthorized = expectedNextUser.getUserId() == userId;
-        return cellIsEmpty && moveIsNotDuplicated && userIsAuthorized;
     }
 
     public static String name(User user) {

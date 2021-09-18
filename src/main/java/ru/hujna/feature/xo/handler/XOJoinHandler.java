@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.hujna.feature.xo.GameCache;
 import ru.hujna.feature.xo.XOUtil;
+import ru.hujna.feature.xo.ui.Keyboard;
 import ru.hujna.lock.TryLock;
 import ru.hujna.feature.xo.model.Join;
 import ru.hujna.feature.xo.model.XO;
@@ -33,6 +34,9 @@ public class XOJoinHandler implements Handler {
     @NonNull
     private final Parser<Join> parser;
 
+    @NonNull
+    private final Keyboard keyboard;
+
     @Override
     public List<? extends PartialBotApiMethod<? extends Serializable>> handle(Update update) {
 
@@ -51,7 +55,7 @@ public class XOJoinHandler implements Handler {
                 List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
                 if (lock.isLockAcquired()) {
                     if (validate(game, update)) {
-                        var gameNext = XOUtil.join(game, opponentId);
+                        var gameNext = game.join(opponentId);
                         gameCache.put(gameNext);
 
                         result = new ArrayList<>();
@@ -73,7 +77,7 @@ public class XOJoinHandler implements Handler {
                                 .builder()
                                 .messageId(callbackMessageId)
                                 .chatId(chatId.toString())
-                                .replyMarkup(XOUtil.markup(gameNext))
+                                .replyMarkup(keyboard.markup(gameNext))
                                 .build();
                         result.add(editKeyboard);
                     }

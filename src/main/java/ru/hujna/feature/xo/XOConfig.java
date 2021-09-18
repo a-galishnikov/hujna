@@ -10,6 +10,9 @@ import ru.hujna.feature.xo.handler.XOMoveHandler;
 import ru.hujna.feature.xo.model.Join;
 import ru.hujna.feature.xo.model.Move;
 import ru.hujna.feature.xo.parse.Parser;
+import ru.hujna.feature.xo.ui.FieldKeyboard;
+import ru.hujna.feature.xo.ui.JoinKeyboard;
+import ru.hujna.feature.xo.ui.Keyboard;
 import ru.hujna.processor.Processor;
 import ru.hujna.processor.handler.Handler;
 import ru.hujna.processor.matcher.CallbackRegexMatcher;
@@ -37,8 +40,12 @@ public class XOConfig {
     }
 
     @Bean
-    public Handler xoMsgHandler(GameCache gameCache) {
-        return new XOHandler(gameCache);
+    public Handler xoMsgHandler(GameCache gameCache, @Qualifier("joinKeyboard") Keyboard keyboard) {
+        return new XOHandler(gameCache, keyboard);
+    }
+
+    public @Bean Keyboard joinKeyboard() {
+        return new JoinKeyboard();
     }
 
     @Bean
@@ -58,8 +65,8 @@ public class XOConfig {
     }
 
     @Bean
-    public Handler xoMoveHandler(GameCache gameCache, Parser<Move> parser) {
-        return new XOMoveHandler(gameCache, parser);
+    public Handler xoMoveHandler(GameCache gameCache, Parser<Move> parser, @Qualifier("fieldKeyboard") Keyboard keyboard) {
+        return new XOMoveHandler(gameCache, parser, keyboard);
     }
 
     @Bean
@@ -79,9 +86,13 @@ public class XOConfig {
     }
 
     @Bean
-    public Handler xoJoinHandler(GameCache gameCache, Parser<Join> parser) {
-        return new XOJoinHandler(gameCache, parser);
+    public Handler xoJoinHandler(GameCache gameCache, Parser<Join> parser, @Qualifier("fieldKeyboard") Keyboard keyboard) {
+        return new XOJoinHandler(gameCache, parser, keyboard);
     }
 
+    @Bean
+    public Keyboard fieldKeyboard() {
+        return new FieldKeyboard();
+    }
 
 }

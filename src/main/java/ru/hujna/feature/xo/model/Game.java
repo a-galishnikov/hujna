@@ -37,4 +37,38 @@ public class Game {
     @NonNull
     private final Lock lock = new ReentrantLock();
 
+    public static Game init(Long chatId, Integer messageId, Long starterId) {
+        return Game.builder()
+                .chatId(chatId)
+                .messageId(messageId)
+                .players(TwoPlayers.of(starterId, XO.random()))
+                .state(State.NEW)
+                .build();
+    }
+
+    public Game join(long opponentId) {
+        return Game.builder()
+                .chatId(this.getChatId())
+                .messageId(this.getMessageId())
+                .players(TwoPlayers.of(this.getPlayers(), opponentId))
+                .lastMove(this.getLastMove())
+                .field(this.getField())
+                .state(State.STARTED)
+                .build();
+    }
+
+    public Game move(Move move) {
+        XO[][] field = XOUtil.move(this.getField(), move);
+        State state = XOUtil.calcState(field);
+
+        return Game.builder()
+                .chatId(this.getChatId())
+                .messageId(this.getMessageId())
+                .players(this.getPlayers())
+                .lastMove(move.xo())
+                .field(field)
+                .state(state)
+                .build();
+    }
+
 }

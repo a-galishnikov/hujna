@@ -7,8 +7,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.hujna.feature.xo.GameCache;
 import ru.hujna.feature.xo.XOUtil;
+import ru.hujna.feature.xo.model.Game;
+import ru.hujna.feature.xo.model.XO;
+import ru.hujna.feature.xo.ui.Keyboard;
 import ru.hujna.lock.TryLock;
 import ru.hujna.feature.xo.model.Move;
 import ru.hujna.feature.xo.parse.Parser;
@@ -29,6 +34,9 @@ public class XOMoveHandler implements Handler {
     @NonNull
     private final Parser<Move> parser;
 
+    @NonNull
+    private final Keyboard keyboard;
+
     @Override
     public List<BotApiMethod<? extends Serializable>> handle(Update update) {
         var callback = update.getCallbackQuery();
@@ -47,8 +55,8 @@ public class XOMoveHandler implements Handler {
                     switch (game.getState()) {
                         case STARTED:
                         case PLAYING:
-                            if (XOUtil.validate(game, move, userId)) {
-                                var gameNext = XOUtil.move(game, move);
+                            if (validate(game, move, userId)) {
+                                var gameNext = game.move(move);
                                 cache.put(gameNext);
 
                                 result = new ArrayList<>();
@@ -57,7 +65,7 @@ public class XOMoveHandler implements Handler {
                                         .builder()
                                         .messageId(callbackMessageId)
                                         .chatId(chatIdStr)
-                                        .replyMarkup(XOUtil.markup(gameNext))
+                                        .replyMarkup(keyboard.markup(gameNext))
                                         .build();
 
                                 result.add(editField);
@@ -94,5 +102,13 @@ public class XOMoveHandler implements Handler {
                 return result;
             }
         }).orElse(Collections.emptyList());
+    }
+
+    private boolean validate(Game game, Move move, long userId) {
+        boolean cellIsEmpty = game.getField()[move.x()][move.y()] == XO.E;
+        boolean moveIsNotDuplicated = game.getLastMove() != move.xo();
+        var expectedNextUser = game.getPlayers().get(move.xo());
+        boolean userIsAuthorized = expectedNextUser.getUserId() == userId;
+        return cellIsEmpty && moveIsNotDuplicated && userIsAuthorized;
     }
 }
