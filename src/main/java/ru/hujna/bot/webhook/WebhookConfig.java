@@ -1,5 +1,6 @@
 package ru.hujna.bot.webhook;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultWebhook;
 
 @Profile("webhook")
 @Configuration
+@Slf4j
 public class WebhookConfig {
 
     @Bean
@@ -24,7 +26,12 @@ public class WebhookConfig {
 
     @Bean
     public DefaultBotOptions options() {
-        return new DefaultBotOptions();
+        var options = new DefaultBotOptions();
+        int cores = Runtime.getRuntime().availableProcessors();
+        int maxThreads = cores > 2 ? cores / 2 : 1; // heroku cores are shared, so will try to use only half
+        log.info("Found {} cores, setting {} maxThreads", cores, maxThreads);
+        options.setMaxThreads(cores);
+        return options;
     }
 
     @Bean
