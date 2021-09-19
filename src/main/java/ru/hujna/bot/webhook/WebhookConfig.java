@@ -18,7 +18,7 @@ public class WebhookConfig {
     @Bean
     public TelegramBotsApi telegramBotsApi(@Value("${PORT:8181}") String port) throws TelegramApiException {
         var webhook = new DefaultWebhook();
-        webhook.setInternalUrl(String.format("http://localhost:%s", port));
+        webhook.setInternalUrl(String.format("http://0.0.0.0:%s", port));
         return new TelegramBotsApi(DefaultBotSession.class, webhook);
     }
 
