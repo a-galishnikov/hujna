@@ -53,7 +53,7 @@ public class XOJoinHandler implements Handler {
         return gameCache.get(chatId, initialMessageId).map(game -> {
             try (var lock = TryLock.of(game.getLock())) {
                 List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
-                if (lock.isLockAcquired()) {
+                if (lock.isAcquired()) {
                     if (validate(game, update)) {
                         var gameNext = game.join(opponentId);
                         gameCache.put(gameNext);

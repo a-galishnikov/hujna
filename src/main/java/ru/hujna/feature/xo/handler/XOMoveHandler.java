@@ -7,8 +7,6 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.hujna.feature.xo.GameCache;
 import ru.hujna.feature.xo.XOUtil;
 import ru.hujna.feature.xo.model.Game;
@@ -51,7 +49,7 @@ public class XOMoveHandler implements Handler {
         return cache.get(chatId, initialMessageId).map(game -> {
             try(var lock = TryLock.of(game.getLock())) {
                 List<BotApiMethod<? extends Serializable>> result = Collections.emptyList();
-                if (lock.isLockAcquired()) {
+                if (lock.isAcquired()) {
                     switch (game.getState()) {
                         case STARTED:
                         case PLAYING:

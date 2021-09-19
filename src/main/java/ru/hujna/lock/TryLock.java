@@ -9,24 +9,24 @@ public class TryLock implements AutoCloseable {
     @NonNull
     private final Lock lock;
 
-    private final boolean lockAcquired;
+    private final boolean acquired;
 
     private TryLock(Lock lock) {
         this.lock = lock;
-        lockAcquired = lock.tryLock();
+        acquired = lock.tryLock();
     }
 
     public static TryLock of(Lock lock) {
         return new TryLock(lock);
     }
 
-    public boolean isLockAcquired() {
-        return lockAcquired;
+    public boolean isAcquired() {
+        return acquired;
     }
 
     @Override
     public void close() {
-        if (lockAcquired) {
+        if (acquired) {
             lock.unlock();
         }
     }
