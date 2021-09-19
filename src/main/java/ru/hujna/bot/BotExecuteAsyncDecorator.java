@@ -8,22 +8,23 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
 
-public interface BotExecuteDecorator {
+public interface BotExecuteAsyncDecorator {
 
     @SneakyThrows
-    default <T extends Serializable> Serializable execute(PartialBotApiMethod<T> method) {
+    default <T extends Serializable> CompletableFuture<? extends Serializable> executeAsync(PartialBotApiMethod<T> method) {
         if (method instanceof BotApiMethod<T> botMethod) {
-            return execute(botMethod);
+            return executeAsync(botMethod);
         }
         if (method instanceof SendPhoto sendPhoto) {
-            return execute(sendPhoto);
+            return executeAsync(sendPhoto);
         }
         throw new UnsupportedOperationException("Method type not supported: " + method.getClass());
     }
 
-    <T extends Serializable, Method extends BotApiMethod<T>> T execute(Method method) throws TelegramApiException;
+    <T extends Serializable, Method extends BotApiMethod<T>> CompletableFuture<T> executeAsync(Method method) throws TelegramApiException;
 
-    Message execute(SendPhoto sendPhoto) throws TelegramApiException;
+    CompletableFuture<Message> executeAsync(SendPhoto sendPhoto);
 
 }

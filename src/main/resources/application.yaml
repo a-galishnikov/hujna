@@ -1,3 +1,5 @@
 bot:
   name: ${BOT_NAME}
   token: ${BOT_TOKEN}
+  path: hujna
+  url: ${BOT_URL}
