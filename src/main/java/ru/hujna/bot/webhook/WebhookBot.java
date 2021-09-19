@@ -11,12 +11,12 @@ import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.starter.SpringWebhookBot;
 import ru.hujna.bot.BotConfig;
-import ru.hujna.bot.BotExecuteAsyncDecorator;
+import ru.hujna.bot.BotExecuteDecorator;
 import ru.hujna.processor.handler.Handler;
 
 @Component
 @Profile("webhook")
-public class WebhookBot extends SpringWebhookBot implements BotExecuteAsyncDecorator {
+public class WebhookBot extends SpringWebhookBot implements BotExecuteDecorator {
 
     private final BotConfig config;
     private final Handler dispatcher;
@@ -50,7 +50,7 @@ public class WebhookBot extends SpringWebhookBot implements BotExecuteAsyncDecor
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        dispatcher.handle(update).forEach(this::executeAsync);
+        dispatcher.handle(update).forEach(this::execute);
         return null;
     }
 
