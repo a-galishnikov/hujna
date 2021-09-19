@@ -6,5 +6,5 @@
 - /xkcd - get a random xkcd comic
 
 # How to run 
-1. Set env variables BOT_NAME and BOT_TOKEN
-2. Following steps same as for any regular spring boot app 
+1. Polling mode: set env variables BOT_NAME and BOT_TOKEN, use spring profile "polling"
+2. Webhook mode: set env variables BOT_NAME, BOT_TOKEN and BOT_URL, use spring profile "webhook"
