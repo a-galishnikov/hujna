@@ -1,1 +1,1 @@
-worker: java -Dspring.profiles.active=webhook $JAVA_OPTS -jar ./build/libs/hujna-0.0.1-SNAPSHOT.jar
+web: java -Dspring.profiles.active=webhook $JAVA_OPTS -jar ./build/libs/hujna-0.0.1-SNAPSHOT.jar
