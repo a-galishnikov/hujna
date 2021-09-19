@@ -105,7 +105,7 @@ public class XOMoveHandler implements Handler {
     }
 
     private boolean validate(Game game, Move move, long userId) {
-        boolean cellIsEmpty = game.getField()[move.x()][move.y()] == XO.E;
+        boolean cellIsEmpty = game.getField().cell(move.x(), move.y()) == XO.E;
         boolean moveIsNotDuplicated = game.getLastMove() != move.xo();
         var expectedNextUser = game.getPlayers().get(move.xo());
         boolean userIsAuthorized = expectedNextUser.getUserId() == userId;

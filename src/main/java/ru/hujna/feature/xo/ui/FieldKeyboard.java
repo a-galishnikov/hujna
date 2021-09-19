@@ -17,12 +17,13 @@ public class FieldKeyboard implements Keyboard {
     }
 
     private List<List<InlineKeyboardButton>> keyboard(Game game) {
-        XO[][] field = game.getField();
-        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>(field.length);
-        for (int i = 0; i < field.length; i++) {
-            List<InlineKeyboardButton> row = new ArrayList<>(field[i].length);
-            for (int j = 0; j < field[i].length; j++) {
-                row.add(button(game.getMessageId(), i, j, field[i][j], game.getLastMove().reverse()));
+        var field = game.getField();
+        var dim = field.dim();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>(dim);
+        for (int i = 0; i < dim; i++) {
+            List<InlineKeyboardButton> row = new ArrayList<>(dim);
+            for (int j = 0; j < dim; j++) {
+                row.add(button(game.getMessageId(), i, j, field.cell(i, j), game.getLastMove().reverse()));
             }
             keyboard.add(row);
         }

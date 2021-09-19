@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import ru.hujna.feature.xo.XOUtil;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -32,7 +31,7 @@ public class Game {
 
     @Builder.Default
     @NonNull
-    private final XO[][] field = XOUtil.emptyField();
+    private final Field field = Field.empty();
 
     @NonNull
     private final Lock lock = new ReentrantLock();
@@ -58,8 +57,8 @@ public class Game {
     }
 
     public Game move(Move move) {
-        XO[][] field = XOUtil.move(this.getField(), move);
-        State state = XOUtil.calcState(field);
+        var field = getField().move(move);
+        var state = field.state();
 
         return Game.builder()
                 .chatId(this.getChatId())
